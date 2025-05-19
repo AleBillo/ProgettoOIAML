@@ -4,9 +4,7 @@
 ### 1. Analisi del Dataset & Annotazioni
 **Responsabile: Dominici**
 
-- Esaminare le immagini e il file annotations.csv
-
-- Verificare che le classi siano bilanciate (quante immagini per sasso, carta, forbici)
+- Esaminare le immagini e verificare che le classi siano bilanciate (quante immagini per sasso, carta, forbici)
 
 - Generare statistiche su distribuzione, dimensioni immagini, numero classi
 
