@@ -74,7 +74,8 @@ Output: demo.py o app.py
 
 # Relazione
 ## introduzione
-Addestrare un modello che, data un’immagine, riconosca la posizione e il tipo di "oggetti" presenti, nello specifico il modello di visione artificiale deve, dato un input immagine, riconoscere se la mano mostra "sasso", "carta" o "forbici" per un implementazione di una applicazione per giocare a "Sasso carta e forbici".
+L’obiettivo del progetto è addestrare un modello di visione artificiale in grado di analizzare un’immagine e riconoscere la posizione e il tipo di oggetti presenti, con particolare riferimento alla mano umana. In questo caso specifico, l’applicazione è finalizzata alla realizzazione di un sistema capace di identificare il gesto compiuto dalla mano all’interno del gioco “Sasso, carta, forbici”. Il modello, dato in input un’immagine, deve essere in grado di classificare correttamente la mano tra tre possibili gesti: “sasso”, “carta” o “forbici”. Si tratta quindi di un problema di **image classification** con tre classi ben distinte, in cui l’oggetto da riconoscere è una mano umana in diverse posizioni.
+Infine, il modello potrà essere integrato in un’applicazione interattiva, ad esempio tramite webcam, per permettere all’utente di giocare a “Sasso, carta, forbici” in tempo reale contro la macchina.
 ## Descrizione dataset
 ## Architettura e scelte tecniche
 ## Risultati
