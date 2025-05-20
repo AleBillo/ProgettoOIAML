@@ -1,6 +1,6 @@
 # Progetto di Ottimizzazione, Intelligenza Artificiale e Machine Learning
 ## Assegnazione dei compiti
-https://colab.research.google.com/drive/1nGFvBGkIZX9lJMoHn_MFDnnVWvUJeCpP
+https://colab.research.google.com/drive/1nGFvBGkIZX9lJMoHn_MFDnnVWvUJeCpP\
 **La seguente è la suddivisione indicativa dei compiti in quanto ogni parte del progetto sarà comunque seguita da tutti i membri del gruppo**
 ### 1. Analisi del Dataset & Annotazioni
 **Responsabile: Dominici**
