@@ -1,6 +1,5 @@
 # Progetto di Ottimizzazione, Intelligenza Artificiale e Machine Learning
 ## Assegnazione dei compiti
-https://colab.research.google.com/drive/1nGFvBGkIZX9lJMoHn_MFDnnVWvUJeCpP \
 **La seguente è la suddivisione indicativa dei compiti in quanto ogni parte del progetto sarà comunque seguita da tutti i membri del gruppo**
 ### 1. Analisi del Dataset & Annotazioni
 **Responsabile: Dominici**
@@ -46,6 +45,7 @@ https://colab.research.google.com/drive/1nGFvBGkIZX9lJMoHn_MFDnnVWvUJeCpP \
 
 
 # Relazione
+https://colab.research.google.com/drive/1nGFvBGkIZX9lJMoHn_MFDnnVWvUJeCpP
 ## introduzione
 L’obiettivo del progetto è addestrare un modello di visione artificiale in grado di analizzare un’immagine e riconoscere un feed continuo (Esempio: Webcam). Il modello, data in input un’immagine, deve essere in grado di classificare correttamente la mano tra tre possibili gesti: “sasso”, “carta” o “forbici”. Si tratta quindi di un problema di **image classification** con tre classi ben distinte, in cui l’oggetto da riconoscere è una mano in diverse posizioni.
 L'obbiettivo infine è di ottenere un modello sufficientemente ottimizzato da poter essere eseguito all'interno di un’applicazione mobile, per permettere all’utente di giocare a “Sasso, carta, forbici” in tempo reale contro l'applicazione. 
