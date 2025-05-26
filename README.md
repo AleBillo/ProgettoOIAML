@@ -158,6 +158,15 @@ Varianti più leggere o con meno augmentations sono state testate negli script d
 
 Il file `webcam.py` permette di acquisire il video dalla webcam, preprocessare in tempo reale i frame, passare l’input alla rete neurale e visualizzare la predizione sovrapposta all’immagine.
 
+## Caratteristiche del progetto
+- **Codice modulare:** Il progetto è organizzato in moduli distinti per dataset, augmentations, preprocessing, modello, training, main entrypoint, inferenza live e script di esperimenti, facilitando la manutenzione e l’estendibilità.
+- **Preprocessing e Data Augmentation:** Ampio uso di tecniche di preprocessing e augmentation per migliorare la robustezza.
+- **Custom Dataset/DataLoader:** Utilizzo di una classe Dataset personalizzata compatibile con PyTorch.
+- **Validazione, testing, early stopping:** La pipeline di training prevede validazione ad ogni epoca, salvataggio del modello migliore, fase di test separata e meccanismi di early stopping.
+- **Sperimentazione:** Sono stati testati diversi modelli e configurazioni iperparametriche tramite script dedicati, e la pipeline consente di cambiare dataset facilmente.
+- **Bilanciamento delle classi:** In alcune versioni avanzate viene calcolato e utilizzato un bilanciamento delle classi nella funzione di loss.
+- **Salvataggio/caricamento modello:** Il trainer salva il modello migliore e permette il caricamento per l’inferenza da webcam.
+
 ---
 
 ## Membri del gruppo
