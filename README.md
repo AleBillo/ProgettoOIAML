@@ -169,14 +169,6 @@ Il file `webcam.py` permette di acquisire il video dalla webcam, preprocessare i
 
 ---
 
-## Membri del gruppo
-
-- Jacopo Maria Spitaleri
-- Alessandro Dominici
-- Seck Mactar Ibrahima
-
----
-
 ## Riferimenti ai file chiave del progetto
 
 - [dataset.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/dataset.py)
@@ -187,3 +179,11 @@ Il file `webcam.py` permette di acquisire il video dalla webcam, preprocessare i
 - [main.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/main.py)
 - [webcam.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/webcam.py)
 - [experiments/](https://github.com/AleBillo/ProgettoOIAML/tree/main/ml2/ml2/src/experiments)
+
+---
+
+## Membri del gruppo
+
+- Jacopo Maria Spitaleri
+- Alessandro Dominici
+- Seck Mactar Ibrahima
