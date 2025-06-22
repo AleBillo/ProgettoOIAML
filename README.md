@@ -1,4 +1,6 @@
 # Progetto di Ottimizzazione, Intelligenza Artificiale e Machine Learning
+Link al progetto con anche il dataset: https://www.swisstransfer.com/d/ed5b5277-6201-431b-b1fd-57254852f704
+dato che il dataset era troppo grande per essere caricato su GitHub.
 ## Assegnazione dei compiti
 **La seguente è la suddivisione indicativa dei compiti in quanto ogni parte del progetto sarà comunque seguita da tutti i membri del gruppo**
 ### 1. Analisi del Dataset & Annotazioni
