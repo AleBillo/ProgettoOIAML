@@ -54,11 +54,12 @@ L’obiettivo del progetto è la realizzazione di un modello di visione artifici
 
 ## Descrizione del Dataset e Preprocessing
 
-Il dataset è organizzato in cartelle, una per ciascuna classe (“rock”, “paper”, “scissors”), sia per il training che per il test. Il caricamento delle immagini è gestito dalla classe `RPSDataset`, che si occupa di:
+Il dataset è organizzato in cartelle, una per ciascuna classe (“rock”, “paper”, “scissors”), sia per il training che per il test. Il caricamento delle immagini è gestito dalla classe `CustomDataset` in `src/dataset.py`:
+
 - Scansione delle cartelle e associazione delle etichette numeriche alle classi.
 - Lettura delle immagini tramite OpenCV.
 - Preprocessing con diverse strategie (prevalentemente conversione in scala di grigi e ridimensionamento a 50x50 pixel).
-- Eventuale data augmentation tramite la classe `Augmentations`, che applica trasformazioni stocastiche come flip orizzontale, rotazioni, jitter di colore, affine, random erasing e normalizzazione.
+- Eventuale data augmentation tramite la classe `Augmentations` (`src/augmentations.py`), che applica trasformazioni stocastiche come flip orizzontale, rotazioni, jitter di colore, affine, random erasing e normalizzazione.
 
 Il preprocessing offre anche alternative per la segmentazione della mano tramite HSV o blob analysis, ma la pipeline finale adotta principalmente la versione in scala di grigi per robustezza e velocità.
 
@@ -81,7 +82,7 @@ Durante il caricamento vengono scartate le immagini che non possono essere prepr
 
 ### Modello
 
-Il modello di riferimento è una CNN compatta, ottimizzata per input 50x50 monocanale:
+Il modello di riferimento è una CNN compatta, ottimizzata per input 50x50 monocanale (`src/model.py`):
 
 ```python
 class CNN(nn.Module):
@@ -123,7 +124,7 @@ class CNN(nn.Module):
         return x
 ```
 
-Varianti più leggere o con meno augmentations sono state testate negli script di `experiments` (es. per rapidità o test su dispositivi meno potenti).
+Varianti più leggere o con meno augmentations sono state testate negli script della cartella `experiments/`.
 
 ### Pipeline di Training
 
@@ -154,31 +155,49 @@ Varianti più leggere o con meno augmentations sono state testate negli script d
 
 ---
 
+## Utilizzo avanzato: quantizzazione e export
+
+### Quantizzazione del modello (`src/quantize.py`)
+Il file `src/quantize.py` consente di effettuare la quantizzazione del modello PyTorch addestrato, riducendo la dimensione del modello e migliorando le prestazioni in fase di inferenza, specialmente su dispositivi embedded o a bassa potenza. Questo script può essere utilizzato per convertire il modello in un formato più leggero, mantenendo una buona accuratezza.
+
+### Esportazione del modello (`src/export.py` e cartella `export/`)
+Il file `src/export.py` permette di esportare i modelli addestrati in vari formati (ad esempio TorchScript, ONNX, o formati custom) per una facile integrazione in applicazioni di produzione o mobile. La cartella `export/` viene utilizzata come destinazione per i file esportati, facilitando la gestione delle versioni dei modelli e la distribuzione.
+
+---
+
 ## Esempio di utilizzo del modello con webcam
 
-Il file `webcam.py` permette di acquisire il video dalla webcam, preprocessare in tempo reale i frame, passare l’input alla rete neurale e visualizzare la predizione sovrapposta all’immagine.
+Il file `src/webcam.py` permette di acquisire il video dalla webcam, preprocessare in tempo reale i frame, passare l’input alla rete neurale e visualizzare la predizione sovrapposta all’immagine.
 
 ## Caratteristiche del progetto
-- **Codice modulare:** Il progetto è organizzato in moduli distinti per dataset, augmentations, preprocessing, modello, training, main entrypoint, inferenza live e script di esperimenti, facilitando la manutenzione e l’estendibilità.
+- **Codice modulare:** Il progetto è organizzato in moduli distinti per dataset, augmentations, preprocessing, modello, training, main entrypoint, inferenza live, quantizzazione, export e script di esperimenti, facilitando la manutenzione.
 - **Preprocessing e Data Augmentation:** Ampio uso di tecniche di preprocessing e augmentation per migliorare la robustezza.
 - **Custom Dataset/DataLoader:** Utilizzo di una classe Dataset personalizzata compatibile con PyTorch.
 - **Validazione, testing, early stopping:** La pipeline di training prevede validazione ad ogni epoca, salvataggio del modello migliore, fase di test separata e meccanismi di early stopping.
 - **Sperimentazione:** Sono stati testati diversi modelli e configurazioni iperparametriche tramite script dedicati, e la pipeline consente di cambiare dataset facilmente.
 - **Bilanciamento delle classi:** In alcune versioni avanzate viene calcolato e utilizzato un bilanciamento delle classi nella funzione di loss.
 - **Salvataggio/caricamento modello:** Il trainer salva il modello migliore e permette il caricamento per l’inferenza da webcam.
+- **Quantizzazione e export:** Disponibili strumenti di quantizzazione e di esportazione per la distribuzione su diversi dispositivi.
 
 ---
 
 ## Riferimenti ai file chiave del progetto
 
-- [dataset.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/dataset.py)
-- [augmentations.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/augmentations.py)
-- [preprocess.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/preprocess.py)
-- [model.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/model.py)
-- [trainer.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/trainer.py)
-- [main.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/main.py)
-- [webcam.py](https://github.com/AleBillo/ProgettoOIAML/blob/main/ml2/ml2/src/webcam.py)
-- [experiments/](https://github.com/AleBillo/ProgettoOIAML/tree/main/ml2/ml2/src/experiments)
+- [src/dataset.py](src/dataset.py) — Gestione del caricamento e organizzazione del dataset.
+- [src/augmentations.py](src/augmentations.py) — Implementazione delle strategie di data augmentation.
+- [src/preprocess.py](src/preprocess.py) — Pipeline di preprocessing delle immagini.
+- [src/model.py](src/model.py) — Definizione del modello neurale.
+- [src/trainer.py](src/trainer.py) — Ciclo di training, validazione e salvataggio del miglior modello.
+- [src/main.py](src/main.py) — Entry point principale per l’addestramento e la valutazione.
+- [src/webcam.py](src/webcam.py) — Inferenza live da webcam.
+- [src/export.py](src/export.py) — Script per esportare il modello addestrato in vari formati.
+- [src/quantize.py](src/quantize.py) — Script per la quantizzazione del modello.
+- [experiments/train.py](experiments/train.py) — Script di training base.
+- [experiments/train_better.py](experiments/train_better.py) — Esperimenti di training con strategie avanzate.
+- [experiments/train_faster.py](experiments/train_faster.py) — Esperimenti di training ottimizzati per velocità.
+- [experiments/train_harder.py](experiments/train_harder.py) — Esperimenti di training con augmentation spinta o reti più profonde.
+- [experiments/train_stronger.py](experiments/train_stronger.py) — Esperimenti di training con reti più potenti o strategie combinate.
+- Cartella [export/](export/) — Contiene i modelli esportati in vari formati.
 
 ---
 
