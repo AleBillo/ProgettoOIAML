@@ -1,5 +1,5 @@
 # Progetto di Ottimizzazione, Intelligenza Artificiale e Machine Learning
-il dataset è scaricabile a questo (link)[https://liveunibo-my.sharepoint.com/:f:/g/personal/jacopo_spitaleri_studio_unibo_it/Eona1-5bFxRDuKmFk7iIx74BcqjLSSqiCw2mghzz2HDxJA?e=R565wY]
+il dataset è scaricabile al seguente link: https://liveunibo-my.sharepoint.com/:f:/g/personal/jacopo_spitaleri_studio_unibo_it/Eona1-5bFxRDuKmFk7iIx74BcqjLSSqiCw2mghzz2HDxJA?e=R565wY
 
 ## Assegnazione dei compiti
 **La seguente è la suddivisione indicativa dei compiti in quanto ogni parte del progetto sarà comunque seguita da tutti i membri del gruppo**
