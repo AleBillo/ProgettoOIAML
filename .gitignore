@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+analysis/
+runs/
+data/
+
+.DS_Store
+checkpoint.pth

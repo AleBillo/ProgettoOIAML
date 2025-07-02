@@ -1,0 +1,129 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "RPS Configuration Schema",
+	"type": "object",
+	"properties": {
+		"model": {
+			"type": "string"
+		},
+		"preprocessing": {
+			"type": "string",
+			"default": "greyscale"
+		},
+		"augmentation": {
+			"type": "string",
+			"default": "default"
+		},
+		"optimizer": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"lr": {
+					"type": "number",
+					"minimum": 0
+				},
+				"momentum": {
+					"type": "number",
+					"minimum": 0,
+					"default": 0.9
+				}
+			},
+			"required": ["name", "lr"],
+			"additionalProperties": false
+		},
+		"loss": {
+			"type": "string"
+		},
+		"scheduler": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"step_size": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"gamma": {
+					"type": "number",
+					"minimum": 0
+				},
+				"factor": {
+					"type": "number",
+					"minimum": 0
+				},
+				"patience": {
+					"type": "integer",
+					"minimum": 1
+				}
+			},
+			"required": ["name"],
+			"additionalProperties": false
+		},
+		"training": {
+			"type": "object",
+			"properties": {
+				"batch_size": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"num_epochs": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"patience": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"resume_from_checkpoint": {
+					"type": "boolean"
+				},
+				"checkpoint_path": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"batch_size",
+				"num_epochs",
+				"patience",
+				"resume_from_checkpoint",
+				"checkpoint_path"
+			]
+		},
+		"paths": {
+			"type": "object",
+			"properties": {
+				"train_dir": { "type": "string" },
+				"test_dir": { "type": "string" },
+				"weight_dir": { "type": "string" }
+			},
+			"required": ["train_dir", "test_dir", "weight_dir"]
+		},
+		"logging": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"log_dir": {
+					"type": "string"
+				}
+			},
+			"required": ["name", "log_dir"]
+		}
+	},
+	"required": [
+		"model",
+		"preprocessing",
+		"augmentation",
+		"optimizer",
+		"loss",
+		"scheduler",
+		"training",
+		"paths",
+		"logging"
+	],
+	"additionalProperties": false
+}
