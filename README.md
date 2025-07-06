@@ -1,5 +1,4 @@
 # Progetto di Ottimizzazione, Intelligenza Artificiale e Machine Learning
-il dataset è scaricabile al seguente [link](https://www.swisstransfer.com/d/1423e986-cad6-4c4c-be1f-aac3ab34b18b).
 
 ## Assegnazione dei compiti
 **La seguente è la suddivisione indicativa dei compiti in quanto ogni parte del progetto sarà comunque seguita da tutti i membri del gruppo**
