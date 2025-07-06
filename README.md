@@ -42,25 +42,26 @@ il dataset è scaricabile al seguente [link](https://www.swisstransfer.com/d/142
 
 # Relazione Progetto: Ottimizzazione, Intelligenza Artificiale e Machine Learning
 
+# Relazione Progetto: Ottimizzazione, Intelligenza Artificiale e Machine Learning
+
 ## Introduzione
 
-L’obiettivo del progetto è la realizzazione di un modello di visione artificiale per il riconoscimento di gesti della mano corrispondenti alle classi “sasso”, “carta” e “forbici”, tramite immagini statiche o un feed continuo da webcam. Il modello è pensato per essere sufficientemente leggero ed efficiente per l’integrazione in un’applicazione mobile, ad esempio per consentire all’utente di giocare a “Sasso, carta, forbici” contro un’intelligenza artificiale.
+L’obiettivo di questo progetto è la realizzazione di un sistema di visione artificiale, tramite tecniche di Deep Learning, per il riconoscimento dei gesti della mano corrispondenti alle classi “sasso”, “carta” e “forbici”. Il sistema è pensato per funzionare sia su immagini statiche sia in tempo reale da webcam, con particolare attenzione all’ottimizzazione del modello per velocità e robustezza.
 
 ---
 
 ## Descrizione del Dataset e Preprocessing
 
-Il dataset è organizzato in cartelle, una per ciascuna classe (“rock”, “paper”, “scissors”), sia per il training che per il test. Il caricamento delle immagini è gestito dalla classe `CustomDataset` in `src/dataset.py`:
+Il dataset utilizzato è strutturato in cartelle distinte per ciascuna classe (“rock”, “paper”, “scissors”) e per le suddivisioni training e test. L’analisi iniziale è stata fondamentale per verificare il bilanciamento tra le classi e la qualità delle immagini. A questo scopo sono stati generati grafici di distribuzione delle classi e preview di campioni casuali tramite il modulo `dataset_analysis.py`.
 
-- Scansione delle cartelle e associazione delle etichette numeriche alle classi.
-- Lettura delle immagini tramite OpenCV.
-- Preprocessing con diverse strategie (prevalentemente conversione in scala di grigi e ridimensionamento a 50x50 pixel).
-- Eventuale data augmentation tramite la classe `Augmentations` (`src/augmentations.py`), che applica trasformazioni stocastiche come flip orizzontale, rotazioni, jitter di colore, affine, random erasing e normalizzazione.
+Le fasi di preprocessing sono state implementate per garantire uniformità e robustezza nel caricamento dei dati:
+- Conversione delle immagini in scala di grigi e ridimensionamento a 50x50 pixel, scelta risultata la più efficace dopo test comparativi con segmentazioni HSV e blob analysis.
+- Implementazione di un DataLoader custom (classe `RPSDataset` in `dataset.py`), in grado di scartare automaticamente immagini non processabili e mappare nomi delle classi in etichette numeriche.
+- Data augmentation tramite la classe `Augmentations` (`dataset/augmentations.py`), applicando trasformazioni stocastiche come flip, rotazione, jitter di colore, affine e random erasing.
 
-Il preprocessing offre anche alternative per la segmentazione della mano tramite HSV o blob analysis, ma la pipeline finale adotta principalmente la versione in scala di grigi per robustezza e velocità.
+Esempio di preprocessing robusto:
 
 ```python
-# Esempio di preprocessing robusto:
 def preprocess(img, target_size=(50, 50)):
     if img is None:
         return None
@@ -70,7 +71,7 @@ def preprocess(img, target_size=(50, 50)):
     return gray
 ```
 
-Durante il caricamento vengono scartate le immagini che non possono essere preprocessate correttamente, garantendo la qualità dei dati in ingresso.
+L’intera pipeline garantisce la pulizia e l’omogeneità del dataset, prerequisito essenziale per il training efficace della rete.
 
 ---
 
@@ -78,7 +79,7 @@ Durante il caricamento vengono scartate le immagini che non possono essere prepr
 
 ### Modello
 
-Il modello di riferimento è una CNN compatta, ottimizzata per input 50x50 monocanale (`src/model.py`):
+Il modello principale è una CNN compatta, progettata ad hoc per input monocanale 50x50, implementata in `src/model.py`. La rete impiega tre blocchi convoluzionali con batch normalization e max pooling, seguiti da un classificatore fully connected. Sono state sperimentate anche varianti più leggere e diverse strategie di augmentation negli script della cartella `experiments/`.
 
 ```python
 class CNN(nn.Module):
@@ -120,59 +121,63 @@ class CNN(nn.Module):
         return x
 ```
 
-Varianti più leggere o con meno augmentations sono state testate negli script della cartella `experiments/`.
-
 ### Pipeline di Training
 
-- **Trainer**: Gestione del ciclo di training e validazione, con salvataggio automatico del modello migliore, scheduler del learning rate, early stopping e logging delle metriche.
-- **Ottimizzazione**: Adam optimizer, CrossEntropyLoss (con anche label smoothing in alcune varianti).
-- **Augmentation**: Trasformazioni casuali sul train set per migliorare la robustezza.
-- **MixUp**: In uno degli esperimenti è stato implementato anche il MixUp per generare batch interpolati, riducendo l’overfitting.
-- **Scheduler**: Riduzione del learning rate ogni 10 epoche.
+- Gestione training/validazione automatica, con salvataggio del modello migliore, scheduler del learning rate, early stopping e logging su TensorBoard.
+- Ottimizzazione tramite Adam optimizer e CrossEntropyLoss (con varianti usando label smoothing).
+- Augmentation avanzata per robustezza (flip, rotazioni, jitter, affine, random erasing e, in alcuni esperimenti, MixUp).
+- Scheduler di learning rate con riduzione ogni 10 epoche.
+- Configurazione centralizzata via file JSON (`config/config.json`), per riproducibilità e flessibilità degli esperimenti.
 
 ---
 
 ## Risultati
 
-- L’accuratezza del modello, valutata su immagini mai viste, viene monitorata ad ogni epoca e il modello con la migliore accuracy viene salvato.
-- Il risultato tipico raggiunge una test accuracy superiore all’85-90% (a seconda della variante e del preprocessing).
-- Vengono stampate le metriche di loss e accuracy durante il training. Non sono stati inclusi grafici nel codice, ma è semplice integrarli.
-- L’inferenza in tempo reale da webcam funziona in modo fluido e reattivo, mostrando la predizione sull’immagine live.
+- Accuratezza di test costantemente superiore all’85-90%, variabile in base alla pipeline di preprocessing e augmentation adottata.
+- Salvataggio automatico del modello con la migliore performance su validation set.
+- Metriche di loss e accuracy loggate durante il training, con possibilità di visualizzazione tramite TensorBoard.
+- Inferenza in tempo reale via webcam, con predizione visualizzata “live” e possibilità di test immediato della robustezza del modello.
 
 ---
 
 ## Riflessione sui Problemi e Soluzioni
 
-- **Bilanciamento del Dataset**: Il dataset è stato analizzato per garantire che le classi fossero rappresentate in modo equo.
-- **Robustezza del Preprocessing**: Sono stati provati diversi metodi (HSV, largest blob, mediapipe, scala di grigi). Quello in scala di grigi è risultato più robusto e generalizzabile.
-- **Overfitting**: Contrastato con augmentation avanzata (random erasing, affine, jitter, mixup) e regularizzazione (dropout).
-- **Early Stopping**: Introdotto per prevenire l’overfitting e ridurre i tempi di addestramento.
-- **Test su Webcam**: Implementata una pipeline dedicata che permette di testare il modello “dal vivo” e visualizzare la maschera filtrata in parallelo al frame originale.
+- **Bilanciamento delle classi:** Analisi statistica iniziale e, nelle versioni avanzate, ponderazione della loss per classi sbilanciate.
+- **Preprocessing robusto:** Testate diverse pipeline (HSV, blob, MediaPipe, scala di grigi); scelta finale della scala di grigi per semplicità, efficienza e generalizzabilità.
+- **Overfitting:** Affrontato con augmentation aggressiva e regularizzazione (dropout, early stopping).
+- **Early Stopping:** Introdotto per evitare eccessivo overfitting e rendere il training più efficiente.
+- **Testing su webcam:** Pipeline dedicata per validare la performance del modello in scenari reali e visualizzare anche le maschere di segmentazione.
 
 ---
 
 ## Utilizzo avanzato: quantizzazione e export
 
-### Quantizzazione del modello (`src/quantize.py`)
-Il file `src/quantize.py` consente di effettuare la quantizzazione del modello PyTorch addestrato, riducendo la dimensione del modello e migliorando le prestazioni in fase di inferenza, specialmente su dispositivi embedded o a bassa potenza. Questo script può essere utilizzato per convertire il modello in un formato più leggero, mantenendo una buona accuratezza.
+### Quantizzazione
 
-### Esportazione del modello (`src/export.py` e cartella `export/`)
-Il file `src/export.py` permette di esportare i modelli addestrati in vari formati (ad esempio TorchScript, ONNX, o formati custom) per una facile integrazione in applicazioni di produzione o mobile. La cartella `export/` viene utilizzata come destinazione per i file esportati, facilitando la gestione delle versioni dei modelli e la distribuzione.
+Il file `src/quantize.py` permette la quantizzazione del modello PyTorch addestrato, riducendone la dimensione e aumentando la velocità di inferenza, importante per deployment su hardware limitato.
+
+### Esportazione
+
+Il file `src/export.py` consente di esportare modelli in diversi formati (TorchScript, ONNX, custom), facilitando l’integrazione in applicazioni di produzione o dispositivi mobili.
 
 ---
 
 ## Esempio di utilizzo del modello con webcam
-Il file `src/webcam.py` permette di acquisire il video dalla webcam, preprocessare in tempo reale i frame, passare l’input alla rete neurale e visualizzare la predizione sovrapposta all’immagine.
+
+Il file `src/webcam.py` acquisisce video dalla webcam, preprocessa i frame in tempo reale, effettua l’inferenza e mostra la predizione sovrapposta. Questo consente una valutazione immediata del modello in condizioni realistiche.
+
+---
 
 ## Caratteristiche del progetto
-- **Codice modulare:** Il progetto è organizzato in moduli distinti per dataset, augmentations, preprocessing, modello, training, main entrypoint, inferenza live, quantizzazione, export e script di esperimenti, facilitando la manutenzione.
-- **Preprocessing e Data Augmentation:** Ampio uso di tecniche di preprocessing e augmentation per migliorare la robustezza.
-- **Custom Dataset/DataLoader:** Utilizzo di una classe Dataset personalizzata compatibile con PyTorch.
-- **Validazione, testing, early stopping:** La pipeline di training prevede validazione ad ogni epoca, salvataggio del modello migliore, fase di test separata e meccanismi di early stopping.
-- **Sperimentazione:** Sono stati testati diversi modelli e configurazioni iperparametriche tramite script dedicati, e la pipeline consente di cambiare dataset facilmente.
-- **Bilanciamento delle classi:** In alcune versioni avanzate viene calcolato e utilizzato un bilanciamento delle classi nella funzione di loss.
-- **Salvataggio/caricamento modello:** Il trainer salva il modello migliore e permette il caricamento per l’inferenza da webcam.
-- **Quantizzazione e export:** Disponibili strumenti di quantizzazione e di esportazione per la distribuzione su diversi dispositivi.
+
+- **Codice modulare:** Suddiviso in moduli per dataset, augmentations, preprocessing, modello, training, inferenza, quantizzazione, export ed esperimenti.
+- **Preprocessing e Data Augmentation:** Ampio uso di tecniche per aumentare la robustezza e la generalizzazione del modello.
+- **Custom Dataset/DataLoader:** Gestione personalizzata compatibile con PyTorch.
+- **Validazione, testing, early stopping:** Pipeline rigorosa con validazione ad ogni epoca e salvataggio del modello migliore.
+- **Sperimentazione:** Facilmente configurabile tramite file di configurazione e script dedicati.
+- **Bilanciamento delle classi:** Possibilità di bilanciare la loss per dataset non perfettamente bilanciati.
+- **Salvataggio/caricamento modello:** Gestione automatica dei checkpoint.
+- **Quantizzazione e export:** Strumenti dedicati per deployment su diversi dispositivi.
 
 ---
 
