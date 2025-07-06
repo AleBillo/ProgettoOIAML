@@ -3,11 +3,11 @@ il dataset è scaricabile al seguente [link](https://www.swisstransfer.com/d/142
 
 ## Assegnazione dei compiti
 **La seguente è la suddivisione indicativa dei compiti in quanto ogni parte del progetto sarà comunque seguita da tutti i membri del gruppo**
+
 ### 1. Analisi del Dataset & Annotazioni
 **Responsabile: Dominici**
 
 - Esaminare le immagini e verificare che le classi siano bilanciate (quante immagini per sasso, carta, forbici)
-
 - Generare statistiche su distribuzione, dimensioni immagini, numero classi
 
 
@@ -15,9 +15,7 @@ il dataset è scaricabile al seguente [link](https://www.swisstransfer.com/d/142
 **Responsabile: Dominici**
 
 - Preprocessing delle immagini (resize, normalizzazione,...)
-
 - Creare un DataLoader custom con PyTorch 
-
 - Eventuale Data augmentation 
 
 
@@ -25,7 +23,6 @@ il dataset è scaricabile al seguente [link](https://www.swisstransfer.com/d/142
 **Responsabile: Spitaleri**
 
 - Progettare la rete neurale
-
 - Costruire pipeline di training 
 
 
@@ -33,16 +30,13 @@ il dataset è scaricabile al seguente [link](https://www.swisstransfer.com/d/142
 **Responsabile: Seck**
 
 - Gestire ciclo di training con logging delle metriche
-
 - Monitoraggio con TensorBoard e scelta del modello migliore
 
 ### 5. Testing del modello addestrato
 **Responsabile: Seck**
   
 - Valutazione su immagini mai viste 
-
 - Grafici metriche: Accuracy, Confusion Matrix, mAP 
-
 - (opzionale) Visualizzare bounding box e classe predetta su immagini
 
 
@@ -168,7 +162,6 @@ Il file `src/export.py` permette di esportare i modelli addestrati in vari forma
 ---
 
 ## Esempio di utilizzo del modello con webcam
-
 Il file `src/webcam.py` permette di acquisire il video dalla webcam, preprocessare in tempo reale i frame, passare l’input alla rete neurale e visualizzare la predizione sovrapposta all’immagine.
 
 ## Caratteristiche del progetto
@@ -180,26 +173,6 @@ Il file `src/webcam.py` permette di acquisire il video dalla webcam, preprocessa
 - **Bilanciamento delle classi:** In alcune versioni avanzate viene calcolato e utilizzato un bilanciamento delle classi nella funzione di loss.
 - **Salvataggio/caricamento modello:** Il trainer salva il modello migliore e permette il caricamento per l’inferenza da webcam.
 - **Quantizzazione e export:** Disponibili strumenti di quantizzazione e di esportazione per la distribuzione su diversi dispositivi.
-
----
-
-## Riferimenti ai file chiave del progetto
-
-- [src/dataset.py](src/dataset.py) — Gestione del caricamento e organizzazione del dataset.
-- [src/augmentations.py](src/augmentations.py) — Implementazione delle strategie di data augmentation.
-- [src/preprocess.py](src/preprocess.py) — Pipeline di preprocessing delle immagini.
-- [src/model.py](src/model.py) — Definizione del modello neurale.
-- [src/trainer.py](src/trainer.py) — Ciclo di training, validazione e salvataggio del miglior modello.
-- [src/main.py](src/main.py) — Entry point principale per l’addestramento e la valutazione.
-- [src/webcam.py](src/webcam.py) — Inferenza live da webcam.
-- [src/export.py](src/export.py) — Script per esportare il modello addestrato in vari formati.
-- [src/quantize.py](src/quantize.py) — Script per la quantizzazione del modello.
-- [experiments/train.py](experiments/train.py) — Script di training base.
-- [experiments/train_better.py](experiments/train_better.py) — Esperimenti di training con strategie avanzate.
-- [experiments/train_faster.py](experiments/train_faster.py) — Esperimenti di training ottimizzati per velocità.
-- [experiments/train_harder.py](experiments/train_harder.py) — Esperimenti di training con augmentation spinta o reti più profonde.
-- [experiments/train_stronger.py](experiments/train_stronger.py) — Esperimenti di training con reti più potenti o strategie combinate.
-- Cartella [export/](export/) — Contiene i modelli esportati in vari formati.
 
 ---
 
