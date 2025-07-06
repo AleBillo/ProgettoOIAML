@@ -71,6 +71,28 @@ def preprocess(img, target_size=(50, 50)):
 L’intera pipeline garantisce la pulizia e l’omogeneità del dataset, prerequisito essenziale per il training efficace della rete.
 
 ---
+## Monitoraggio e Analisi con TensorBoard e Moduli di Analisi
+### Logging e Visualizzazione con TensorBoard
+
+Il progetto integra un sistema di logging delle metriche di training e validazione tramite TensorBoard. Questo è reso possibile grazie a un modulo dedicato che, durante l’addestramento, registra in automatico:
+- Loss e accuratezza per ogni epoca
+- Valori delle metriche su validation set
+- Eventuali immagini di esempio, confusion matrix e altri dati diagnostici
+
+In questo modo, è possibile:
+- Monitorare l’andamento del training e identificare rapidamente episodi di overfitting, underfitting o plateaux delle metriche
+- Confrontare tra loro diversi esperimenti in modo visivo
+- Analizzare graficamente i trend delle metriche per prendere decisioni data-driven su modifiche di modello, preprocessing o iperparametri
+
+### Analisi Approfondita: la cartella `analysis`
+
+Oltre a TensorBoard, la cartella `analysis` contiene script e notebook per l’analisi esplorativa del dataset e dei risultati:
+- **Distribuzione delle classi:** script che producono grafici a barre della distribuzione delle classi nel dataset, utili per diagnosticare eventuali sbilanciamenti.
+- **Anteprima immagini:** generazione di collage di campioni casuali per ogni classe, per una rapida ispezione visiva della qualità e varietà dei dati.
+- **Metriche avanzate:** possibilità di calcolare e visualizzare confusion matrix, precision, recall e altre metriche aggregate, utilizzando i file di log prodotti durante il training/test.
+- **Analisi degli errori:** strumenti per identificare esempi “difficili” e visualizzare le predizioni errate, facilitando il debugging del modello.
+
+---
 
 ## Architettura e Scelte Tecniche
 
