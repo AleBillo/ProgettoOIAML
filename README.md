@@ -42,8 +42,6 @@ il dataset è scaricabile al seguente [link](https://www.swisstransfer.com/d/142
 
 # Relazione Progetto: Ottimizzazione, Intelligenza Artificiale e Machine Learning
 
-# Relazione Progetto: Ottimizzazione, Intelligenza Artificiale e Machine Learning
-
 ## Introduzione
 
 L’obiettivo di questo progetto è la realizzazione di un sistema di visione artificiale, tramite tecniche di Deep Learning, per il riconoscimento dei gesti della mano corrispondenti alle classi “sasso”, “carta” e “forbici”. Il sistema è pensato per funzionare sia su immagini statiche sia in tempo reale da webcam, con particolare attenzione all’ottimizzazione del modello per velocità e robustezza.
