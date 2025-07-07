@@ -1,6 +1,6 @@
 {
 	"model": "CNN",
-	"preprocessing": "greyscale",
+	"preprocessing": "blob",
 	"augmentation": "default",
 	"optimizer": {
 		"name": "Adam",
