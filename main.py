@@ -20,27 +20,33 @@ def load_and_validate_config(config_path, schema_path):
 def main():
     config = load_and_validate_config("config/config.json", "config/config_schema.json")
 
+    # Get augmentations and transforms
     aug = get_augmentations(config.get("augmentation", "default"))
     train_transform = aug["train"]
     test_transform = aug["test"]
+    
+    # Get preprocessing configuration
     preprocessing_method = config.get("preprocessing", "greyscale")
     preprocessing_fn = get_preprocessor(preprocessing_method)
 
+    # Create datasets
     train_dataset = RPSDataset(
-            root_dir=config["paths"]["train_dir"],
-            transform=train_transform,
-            preprocessing=preprocessing_fn
-            )
+        root_dir=config["paths"]["train_dir"],
+        transform=train_transform,
+        preprocessing=preprocessing_fn
+    )
     test_dataset = RPSDataset(
-            root_dir=config["paths"]["test_dir"],
-            transform=test_transform,
-            preprocessing=preprocessing_fn
-            )
+        root_dir=config["paths"]["test_dir"],
+        transform=test_transform,
+        preprocessing=preprocessing_fn
+    )
 
+    # Dataset analysis
     analyzer = DatasetAnalysis(train_dataset, output_dir="analysis")
     analyzer.class_distribution(train_dataset.class_map)
     analyzer.random_samples_preview(train_dataset.class_map, num_samples=5)
 
+    # Model setup
     model = get_model(config["model"], input_size=50, num_classes=3)
     optimizer = get_optimizer(model, config["optimizer"])
     criterion = get_loss_function(config["loss"])
@@ -49,23 +55,25 @@ def main():
 
     grad_clip = config["training"].get("grad_clip", None)
 
+    # Trainer setup
     trainer = get_trainer(
-            model=model,
-            train_dataset=train_dataset,
-            test_dataset=test_dataset,
-            lr=config["optimizer"].get("lr", 0.001),
-            patience=config["training"]["patience"],
-            weight_path=os.path.join(config["paths"]["weight_dir"], "best_model.pth"),
-            batch_size=config["training"]["batch_size"],
-            resume_from_checkpoint=config["training"]["resume_from_checkpoint"],
-            checkpoint_path=config["training"]["checkpoint_path"],
-            tb_logger=tb_logger,
-            optimizer=optimizer,
-            criterion=criterion,
-            scheduler=scheduler,
-            grad_clip=grad_clip
-            )
+        model=model,
+        train_dataset=train_dataset,
+        test_dataset=test_dataset,
+        lr=config["optimizer"].get("lr", 0.001),
+        patience=config["training"]["patience"],
+        weight_path=os.path.join(config["paths"]["weight_dir"], "best_model.pth"),
+        batch_size=config["training"]["batch_size"],
+        resume_from_checkpoint=config["training"]["resume_from_checkpoint"],
+        checkpoint_path=config["training"]["checkpoint_path"],
+        tb_logger=tb_logger,
+        optimizer=optimizer,
+        criterion=criterion,
+        scheduler=scheduler,
+        grad_clip=grad_clip
+    )
 
+    # Training
     trainer.train(num_epochs=config["training"]["num_epochs"])
     trainer.save_model(os.path.join(config["paths"]["weight_dir"], "model.pth"))
 

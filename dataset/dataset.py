@@ -18,18 +18,22 @@ class RPSDataset(Dataset):
             for filename in os.listdir(class_folder):
                 if filename.lower().endswith((".jpg", ".png")):
                     path = os.path.join(class_folder, filename)
-                    img = cv2.imread(path)
-                    proc_img = self.preprocessing(img)
+                    proc_img = self._read_and_preprocess(path)
                     if proc_img is not None:
                         self.samples.append((path, self.class_map[label]))
+
+    def _read_and_preprocess(self, img_path):
+        """Private helper method to read and preprocess images."""
+        img = cv2.imread(img_path)
+        proc_img = self.preprocessing(img)
+        return proc_img
 
     def __len__(self):
         return len(self.samples)
 
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
-        img = cv2.imread(img_path)
-        proc_img = self.preprocessing(img)
+        proc_img = self._read_and_preprocess(img_path)
         if proc_img is None:
             proc_img = np.zeros((1, 50, 50), dtype=np.uint8)
         img_pil = Image.fromarray(proc_img[0])
