@@ -8,6 +8,7 @@ from nets import get_model
 from preprocess import get_preprocessor
 from dataset.dataset_analysis import DatasetAnalysis
 from logger import get_logger
+from logger.tensorboard_launcher import launch_tensorboard
 
 def load_and_validate_config(config_path, schema_path):
     with open(schema_path, "r") as f_schema:
@@ -19,6 +20,8 @@ def load_and_validate_config(config_path, schema_path):
 
 def main():
     config = load_and_validate_config("config/config.json", "config/config_schema.json")
+
+    launch_tensorboard(logdir=config["logging"]["log_dir"], port=6006)
 
     aug = get_augmentations(config.get("augmentation", "default"))
     train_transform = aug["train"]
