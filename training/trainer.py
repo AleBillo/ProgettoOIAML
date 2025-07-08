@@ -94,7 +94,12 @@ class Trainer:
                     break
 
             if self.scheduler is not None:
-                self.scheduler.step()
+                # Handle ReduceLROnPlateau scheduler which requires a metric
+                if isinstance(self.scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+                    if test_loss is not None:
+                        self.scheduler.step(test_loss)
+                else:
+                    self.scheduler.step()
 
             self.tb_logger.log_metrics(epoch, train_loss, test_loss, train_acc, test_acc)
             self._save_checkpoint(epoch, train_loss, train_acc, test_loss, test_acc)
