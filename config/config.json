@@ -27,6 +27,7 @@
 	},
 	"logging": {
 		"name": "tensorboard",
-		"log_dir": "runs/rps_experiment"
+		"log_dir": "runs/rps_experiment",
+		"dashboard_enabled": false
 	}
 }

@@ -113,6 +113,10 @@
 				},
 				"log_dir": {
 					"type": "string"
+				},
+				"dashboard_enabled": {
+					"type": "boolean",
+					"default": true
 				}
 			},
 			"required": ["name", "log_dir"]

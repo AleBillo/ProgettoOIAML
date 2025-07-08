@@ -21,7 +21,8 @@ def load_and_validate_config(config_path, schema_path):
 def main():
     config = load_and_validate_config("config/config.json", "config/config_schema.json")
 
-    launch_tensorboard(logdir=config["logging"]["log_dir"], port=6006)
+    if config["logging"].get("dashboard_enabled", True):
+        launch_tensorboard(logdir=config["logging"]["log_dir"], port=6006)
 
     aug = get_augmentations(config.get("augmentation", "default"))
     train_transform = aug["train"]
@@ -70,8 +71,10 @@ def main():
             )
 
     trainer.train(num_epochs=config["training"]["num_epochs"])
-    trainer.save_model(os.path.join(config["paths"]["weight_dir"], "model.pth"))
 
+    tb_logger.save_resume("analysis")
+
+    trainer.save_model(os.path.join(config["paths"]["weight_dir"], "model.pth"))
     print("Training complete.")
 
 if __name__ == "__main__":
