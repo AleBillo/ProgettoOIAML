@@ -3,6 +3,8 @@ from sklearn.metrics import confusion_matrix
 import itertools
 import matplotlib.pyplot as plt
 import os
+import json
+from datetime import datetime
 
 class TensorBoardLogger:
     def __init__(self, log_dir="runs/rps_experiment"):
@@ -23,11 +25,11 @@ class TensorBoardLogger:
             self.writer.add_scalar("Accuracy/Test", test_acc, epoch)
 
         self.metrics_resume[epoch] = {
-                "train_loss": train_loss,
-                "test_loss": test_loss,
-                "train_acc": train_acc,
-                "test_acc": test_acc,
-                }
+            "train_loss": train_loss,
+            "test_loss": test_loss,
+            "train_acc": train_acc,
+            "test_acc": test_acc,
+        }
 
     def log_histograms(self, model, epoch):
         for name, param in model.named_parameters():
@@ -61,20 +63,33 @@ class TensorBoardLogger:
         if not os.path.exists(analysis_folder):
             os.makedirs(analysis_folder)
 
-        resume_filepath = os.path.join(analysis_folder, "tensorboard_log_resume.md")
+        resume_filepath = os.path.join(analysis_folder, "training_resume.txt")
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        config_path = os.path.join("config", "config.json")
+        try:
+            with open(config_path, "r") as cfgf:
+                options = json.load(cfgf)
+            options_str = json.dumps(options, indent=2)
+        except Exception as e:
+            options_str = f"Could not load config/config.json: {e}"
+
         with open(resume_filepath, "w") as f:
-            f.write("# Training Summary\n\n")
+            f.write(f"Training summary generated at: {now}\n")
+            f.write("Options/configuration:\n")
+            f.write(options_str)
+            f.write("\n\n")
             for epoch in sorted(self.metrics_resume.keys()):
                 metrics = self.metrics_resume[epoch]
-                f.write(f"## Epoch {epoch}\n")
+                f.write(f"epoch {epoch}\n")
                 if metrics.get("train_loss") is not None:
-                    f.write(f"- **Train Loss:** {metrics.get('train_loss')}\n")
+                    f.write(f"- train loss: {metrics.get('train_loss')}\n")
                 if metrics.get("test_loss") is not None:
-                    f.write(f"- **Test Loss:** {metrics.get('test_loss')}\n")
+                    f.write(f"- test loss: {metrics.get('test_loss')}\n")
                 if metrics.get("train_acc") is not None:
-                    f.write(f"- **Train Accuracy:** {metrics.get('train_acc')}\n")
+                    f.write(f"- train accuracy: {metrics.get('train_acc')}\n")
                 if metrics.get("test_acc") is not None:
-                    f.write(f"- **Test Accuracy:** {metrics.get('test_acc')}\n")
+                    f.write(f"- test accuracy: {metrics.get('test_acc')}\n")
                 f.write("\n")
         print(f"Training resume saved to {resume_filepath}")
 

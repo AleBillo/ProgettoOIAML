@@ -1,5 +1,5 @@
 {
-	"model": "CNN",
+	"model": "ResNet",
 	"preprocessing": "blob",
 	"augmentation": "default",
 	"optimizer": {
