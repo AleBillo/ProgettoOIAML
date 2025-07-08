@@ -17,7 +17,8 @@
 		"num_epochs": 30,
 		"patience": 5,
 		"resume_from_checkpoint": false,
-		"checkpoint_path": "export/weights/checkpoint.pth"
+		"checkpoint_path": "export/weights/checkpoint.pth",
+		"grad_clip": 2.0
 	},
 	"paths": {
 		"train_dir": "data/pulito/train",

@@ -3,13 +3,11 @@ import json
 import jsonschema
 from dataset.dataset import RPSDataset
 from dataset.augmentations import get_augmentations
-from training.trainer import Trainer
+from training import get_trainer, get_optimizer, get_loss_function, get_scheduler
 from nets import get_model
 from preprocess import get_preprocessor
-from training import get_optimizer, get_loss_function, get_scheduler
 from dataset.dataset_analysis import DatasetAnalysis
 from logger import get_logger
-
 
 def load_and_validate_config(config_path, schema_path):
     with open(schema_path, "r") as f_schema:
@@ -18,7 +16,6 @@ def load_and_validate_config(config_path, schema_path):
         config = json.load(f_config)
     jsonschema.validate(instance=config, schema=schema)
     return config
-
 
 def main():
     config = load_and_validate_config("config/config.json", "config/config_schema.json")
@@ -50,7 +47,9 @@ def main():
     scheduler = get_scheduler(optimizer, config["scheduler"])
     tb_logger = get_logger(config["logging"])
 
-    trainer = Trainer(
+    grad_clip = config["training"].get("grad_clip", None)
+
+    trainer = get_trainer(
             model=model,
             train_dataset=train_dataset,
             test_dataset=test_dataset,
@@ -63,7 +62,8 @@ def main():
             tb_logger=tb_logger,
             optimizer=optimizer,
             criterion=criterion,
-            scheduler=scheduler
+            scheduler=scheduler,
+            grad_clip=grad_clip
             )
 
     trainer.train(num_epochs=config["training"]["num_epochs"])

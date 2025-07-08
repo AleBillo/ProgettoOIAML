@@ -82,6 +82,10 @@
 				},
 				"checkpoint_path": {
 					"type": "string"
+				},
+				"grad_clip": {
+					"type": "number",
+					"minimum": 0
 				}
 			},
 			"required": [

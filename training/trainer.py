@@ -22,7 +22,8 @@ class Trainer:
             tb_logger=None,
             optimizer=None,
             criterion=None,
-            scheduler=None
+            scheduler=None,
+            grad_clip=None
             ):
         self.model = model
         self.train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -30,7 +31,7 @@ class Trainer:
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.criterion = criterion if criterion is not None else nn.CrossEntropyLoss()
         self.optimizer = optimizer if optimizer is not None else optim.Adam(self.model.parameters(), lr=lr)
-        self.scheduler = scheduler if scheduler is not None else optim.lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.5)
+        self.scheduler = scheduler
         self.model.to(self.device)
         self.best_model_wts = copy.deepcopy(model.state_dict())
         self.best_acc = 0.0
@@ -38,6 +39,7 @@ class Trainer:
         self.early_stop_counter = 0
         self.weight_path = weight_path
         self.checkpoint_path = checkpoint_path
+        self.grad_clip = grad_clip
         os.makedirs(os.path.dirname(self.weight_path), exist_ok=True)
         os.makedirs(os.path.dirname(self.checkpoint_path), exist_ok=True)
         self.tb_logger = tb_logger if tb_logger is not None else TensorBoardLogger()
@@ -62,6 +64,10 @@ class Trainer:
                 outputs = self.model(imgs)
                 loss = self.criterion(outputs, labels)
                 loss.backward()
+                
+                if self.grad_clip is not None:
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=self.grad_clip)
+                
                 self.optimizer.step()
                 total_loss += loss.item()
                 _, preds = torch.max(outputs, 1)
@@ -87,9 +93,11 @@ class Trainer:
                     print("Early stopping triggered.")
                     break
 
+            if self.scheduler is not None:
+                self.scheduler.step()
+
             self.tb_logger.log_metrics(epoch, train_loss, test_loss, train_acc, test_acc)
             self._save_checkpoint(epoch, train_loss, train_acc, test_loss, test_acc)
-            self.scheduler.step()
             print(f"Epoch {epoch+1}/{num_epochs}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%")
 
         self.model.load_state_dict(self.best_model_wts)
