@@ -2,10 +2,12 @@ from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import confusion_matrix
 import itertools
 import matplotlib.pyplot as plt
+import os
 
 class TensorBoardLogger:
     def __init__(self, log_dir="runs/rps_experiment"):
         self.writer = SummaryWriter(log_dir=log_dir)
+        self.metrics_resume = {}
 
     def log_model_graph(self, model, input_tensor):
         self.writer.add_graph(model, input_tensor)
@@ -19,6 +21,13 @@ class TensorBoardLogger:
             self.writer.add_scalar("Accuracy/Train", train_acc, epoch)
         if test_acc is not None:
             self.writer.add_scalar("Accuracy/Test", test_acc, epoch)
+
+        self.metrics_resume[epoch] = {
+                "train_loss": train_loss,
+                "test_loss": test_loss,
+                "train_acc": train_acc,
+                "test_acc": test_acc,
+                }
 
     def log_histograms(self, model, epoch):
         for name, param in model.named_parameters():
@@ -47,6 +56,27 @@ class TensorBoardLogger:
         ax.set_xlabel("Predicted label")
         fig.tight_layout()
         return fig
+
+    def save_resume(self, analysis_folder):
+        if not os.path.exists(analysis_folder):
+            os.makedirs(analysis_folder)
+
+        resume_filepath = os.path.join(analysis_folder, "tensorboard_log_resume.md")
+        with open(resume_filepath, "w") as f:
+            f.write("# Training Summary\n\n")
+            for epoch in sorted(self.metrics_resume.keys()):
+                metrics = self.metrics_resume[epoch]
+                f.write(f"## Epoch {epoch}\n")
+                if metrics.get("train_loss") is not None:
+                    f.write(f"- **Train Loss:** {metrics.get('train_loss')}\n")
+                if metrics.get("test_loss") is not None:
+                    f.write(f"- **Test Loss:** {metrics.get('test_loss')}\n")
+                if metrics.get("train_acc") is not None:
+                    f.write(f"- **Train Accuracy:** {metrics.get('train_acc')}\n")
+                if metrics.get("test_acc") is not None:
+                    f.write(f"- **Test Accuracy:** {metrics.get('test_acc')}\n")
+                f.write("\n")
+        print(f"Training resume saved to {resume_filepath}")
 
     def close(self):
         self.writer.close()
