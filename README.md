@@ -79,6 +79,7 @@ In questo modo, è possibile:
 ---
 
 ## Architettura e Scelte Tecniche
+L’architettura del progetto è modulare e altamente configurabile tramite file JSON. Ogni componente principale è isolato in un modulo dedicato, facilitando la manutenzione e l’estensione del sistema.
 
 ## Configurazione e Struttura Modulare
 Il progetto utilizza un file di configurazione (config/config.json) con il relativo schema (config/config_schema.json), in cui sono definiti i principali parametri del sistema come iper-parametri, percorsi ai dati, modalità di preprocessing, architettura della rete e impostazioni di training.
