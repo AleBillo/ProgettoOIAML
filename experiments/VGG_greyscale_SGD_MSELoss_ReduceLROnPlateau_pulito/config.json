@@ -1,0 +1,33 @@
+{
+    "model": "VGG",
+    "preprocessing": "greyscale",
+    "augmentation": "default",
+    "optimizer": {
+        "name": "SGD",
+        "lr": 0.01
+    },
+    "loss": "MSELoss",
+    "scheduler": {
+        "name": "ReduceLROnPlateau",
+        "patience": 3,
+        "factor": 0.1
+    },
+    "training": {
+        "batch_size": 32,
+        "num_epochs": 30,
+        "patience": 5,
+        "resume_from_checkpoint": false,
+        "checkpoint_path": "export/weights/checkpoint.pth",
+        "grad_clip": 2.0
+    },
+    "paths": {
+        "train_dir": "data/pulito/train",
+        "test_dir": "data/pulito/test",
+        "weight_dir": "export/weights"
+    },
+    "logging": {
+        "name": "tensorboard",
+        "log_dir": "runs/rps_experiment",
+        "dashboard_enabled": false
+    }
+}

@@ -3,6 +3,7 @@ import torch
 import copy
 import torch.optim as optim
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from logger.tensorboard_logger import TensorBoardLogger
 
@@ -24,7 +25,7 @@ class Trainer:
             criterion=None,
             scheduler=None,
             grad_clip=None
-            ):
+        ):
         self.model = model
         self.train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         self.test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False) if test_dataset is not None else None
@@ -33,6 +34,7 @@ class Trainer:
         self.optimizer = optimizer if optimizer is not None else optim.Adam(self.model.parameters(), lr=lr)
         self.scheduler = scheduler
         self.model.to(self.device)
+
         self.best_model_wts = copy.deepcopy(model.state_dict())
         self.best_acc = 0.0
         self.patience = patience
@@ -40,8 +42,10 @@ class Trainer:
         self.weight_path = weight_path
         self.checkpoint_path = checkpoint_path
         self.grad_clip = grad_clip
+
         os.makedirs(os.path.dirname(self.weight_path), exist_ok=True)
         os.makedirs(os.path.dirname(self.checkpoint_path), exist_ok=True)
+
         self.tb_logger = tb_logger if tb_logger is not None else TensorBoardLogger()
 
         if resume_from_checkpoint and os.path.exists(self.checkpoint_path):
@@ -62,13 +66,19 @@ class Trainer:
                 imgs, labels = imgs.to(self.device), labels.to(self.device)
                 self.optimizer.zero_grad()
                 outputs = self.model(imgs)
-                loss = self.criterion(outputs, labels)
+
+                # handle MSELoss for classification by one-hot encoding labels
+                if isinstance(self.criterion, nn.MSELoss):
+                    labels_one_hot = F.one_hot(labels, num_classes=outputs.size(1)).float().to(self.device)
+                    loss = self.criterion(outputs, labels_one_hot)
+                else:
+                    loss = self.criterion(outputs, labels)
+
                 loss.backward()
-                
                 if self.grad_clip is not None:
                     torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=self.grad_clip)
-                
                 self.optimizer.step()
+
                 total_loss += loss.item()
                 _, preds = torch.max(outputs, 1)
                 correct += (preds == labels).sum().item()
@@ -81,6 +91,7 @@ class Trainer:
             if self.test_loader:
                 test_loss, test_acc = self.evaluate()
 
+            # save best model
             if self.test_loader and test_acc is not None and test_acc > self.best_acc:
                 self.best_acc = test_acc
                 self.best_model_wts = copy.deepcopy(self.model.state_dict())
@@ -94,50 +105,65 @@ class Trainer:
                     break
 
             if self.scheduler is not None:
-                self.scheduler.step()
+                from torch.optim.lr_scheduler import ReduceLROnPlateau
+                if isinstance(self.scheduler, ReduceLROnPlateau):
+                    if test_loss is not None:
+                        self.scheduler.step(test_loss)
+                else:
+                    self.scheduler.step()
 
             self.tb_logger.log_metrics(epoch, train_loss, test_loss, train_acc, test_acc)
             self._save_checkpoint(epoch, train_loss, train_acc, test_loss, test_acc)
             print(f"Epoch {epoch+1}/{num_epochs}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%")
 
+        # load best weights at end of training
         self.model.load_state_dict(self.best_model_wts)
 
     def evaluate(self):
         if self.test_loader is None:
             return None, None
+
         self.model.eval()
         correct = 0
         total = 0
         total_loss = 0.0
         all_preds = []
         all_labels = []
+
         with torch.no_grad():
             for imgs, labels in self.test_loader:
                 imgs, labels = imgs.to(self.device), labels.to(self.device)
                 outputs = self.model(imgs)
-                loss = self.criterion(outputs, labels)
+
+                if isinstance(self.criterion, nn.MSELoss):
+                    labels_one_hot = F.one_hot(labels, num_classes=outputs.size(1)).float().to(self.device)
+                    loss = self.criterion(outputs, labels_one_hot)
+                else:
+                    loss = self.criterion(outputs, labels)
+
                 total_loss += loss.item()
                 _, preds = torch.max(outputs, 1)
                 correct += (preds == labels).sum().item()
                 total += labels.size(0)
-                all_preds.extend(preds.cpu().numpy())
-                all_labels.extend(labels.cpu().numpy())
+                all_preds.extend(preds.cpu().tolist())
+                all_labels.extend(labels.cpu().tolist())
+
         avg_loss = total_loss / len(self.test_loader)
         acc = 100.0 * correct / total
-        self.tb_logger.log_confusion_matrix(0, all_preds, all_labels, list(range(3)))
+        self.tb_logger.log_confusion_matrix(0, all_preds, all_labels, list(range(outputs.size(1))))
         return avg_loss, acc
 
     def _save_checkpoint(self, epoch, train_loss, train_acc, test_loss, test_acc):
         checkpoint = {
-                "epoch": epoch,
-                "model_state_dict": self.model.state_dict(),
-                "optimizer_state_dict": self.optimizer.state_dict(),
-                "best_acc": self.best_acc,
-                "train_loss": train_loss,
-                "train_acc": train_acc,
-                "test_loss": test_loss,
-                "test_acc": test_acc
-                }
+            "epoch": epoch,
+            "model_state_dict": self.model.state_dict(),
+            "optimizer_state_dict": self.optimizer.state_dict(),
+            "best_acc": self.best_acc,
+            "train_loss": train_loss,
+            "train_acc": train_acc,
+            "test_loss": test_loss,
+            "test_acc": test_acc
+        }
         torch.save(checkpoint, self.checkpoint_path)
 
     def _load_checkpoint(self):

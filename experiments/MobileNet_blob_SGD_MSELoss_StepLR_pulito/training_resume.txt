@@ -1,0 +1,186 @@
+Training summary generated at: 2025-07-09 03:29:52
+Options/configuration:
+{
+  "model": "MobileNet",
+  "preprocessing": "blob",
+  "augmentation": "default",
+  "optimizer": {
+    "name": "SGD",
+    "lr": 0.01
+  },
+  "loss": "MSELoss",
+  "scheduler": {
+    "name": "StepLR",
+    "step_size": 10,
+    "gamma": 0.5
+  },
+  "training": {
+    "batch_size": 32,
+    "num_epochs": 30,
+    "patience": 5,
+    "resume_from_checkpoint": false,
+    "checkpoint_path": "export/weights/checkpoint.pth",
+    "grad_clip": 2.0
+  },
+  "paths": {
+    "train_dir": "data/pulito/train",
+    "test_dir": "data/pulito/test",
+    "weight_dir": "export/weights"
+  },
+  "logging": {
+    "name": "tensorboard",
+    "log_dir": "runs/rps_experiment",
+    "dashboard_enabled": false
+  }
+}
+
+epoch 0
+- train loss: 0.2640916683987991
+- test loss: 0.24482250834504762
+- train accuracy: 36.25743415463042
+- test accuracy: 37.365591397849464
+
+epoch 1
+- train loss: 0.24277675796199488
+- test loss: 0.21971772176524004
+- train accuracy: 40.56924384027188
+- test accuracy: 40.053763440860216
+
+epoch 2
+- train loss: 0.2344192703430717
+- test loss: 0.27126917243003845
+- train accuracy: 42.565845369583684
+- test accuracy: 34.40860215053763
+
+epoch 3
+- train loss: 0.20489433488330325
+- test loss: 0.19432515930384398
+- train accuracy: 52.67629566694987
+- test accuracy: 52.68817204301075
+
+epoch 4
+- train loss: 0.19003853030704163
+- test loss: 0.21011570251236358
+- train accuracy: 57.83772302463891
+- test accuracy: 46.236559139784944
+
+epoch 5
+- train loss: 0.17108841753891996
+- test loss: 0.22872514836490154
+- train accuracy: 64.67714528462191
+- test accuracy: 51.61290322580645
+
+epoch 6
+- train loss: 0.15859351483349865
+- test loss: 0.16827286531527838
+- train accuracy: 69.77485131690739
+- test accuracy: 65.05376344086021
+
+epoch 7
+- train loss: 0.14536803482553443
+- test loss: 0.11798107041977346
+- train accuracy: 72.5998300764656
+- test accuracy: 75.26881720430107
+
+epoch 8
+- train loss: 0.1292191978946731
+- test loss: 0.07467845532422264
+- train accuracy: 77.57009345794393
+- test accuracy: 84.6774193548387
+
+epoch 9
+- train loss: 0.11906111487061591
+- test loss: 0.06148832943290472
+- train accuracy: 80.20390824129142
+- test accuracy: 90.59139784946237
+
+epoch 10
+- train loss: 0.0986506541234416
+- test loss: 0.06070125118518869
+- train accuracy: 83.79354290569243
+- test accuracy: 91.93548387096774
+
+epoch 11
+- train loss: 0.09490829575303439
+- test loss: 0.06692358405174066
+- train accuracy: 84.57943925233644
+- test accuracy: 86.55913978494624
+
+epoch 12
+- train loss: 0.08553144363434734
+- test loss: 0.059126394956062235
+- train accuracy: 85.76890399320305
+- test accuracy: 90.86021505376344
+
+epoch 13
+- train loss: 0.0823483072045083
+- test loss: 0.039142882373804845
+- train accuracy: 87.38317757009345
+- test accuracy: 93.81720430107526
+
+epoch 14
+- train loss: 0.07321311835501645
+- test loss: 0.04300561225196967
+- train accuracy: 88.3177570093458
+- test accuracy: 90.3225806451613
+
+epoch 15
+- train loss: 0.08071560556119359
+- test loss: 0.04590681342718502
+- train accuracy: 87.53186066270179
+- test accuracy: 93.54838709677419
+
+epoch 16
+- train loss: 0.0766826149869106
+- test loss: 0.048694234884654485
+- train accuracy: 88.7000849617672
+- test accuracy: 91.66666666666667
+
+epoch 17
+- train loss: 0.0654454329554495
+- test loss: 0.04410861884631837
+- train accuracy: 89.69838572642311
+- test accuracy: 94.89247311827957
+
+epoch 18
+- train loss: 0.06620184305702916
+- test loss: 0.03599444772892942
+- train accuracy: 89.7196261682243
+- test accuracy: 94.6236559139785
+
+epoch 19
+- train loss: 0.0716400363457364
+- test loss: 0.056896549804757036
+- train accuracy: 89.88954970263381
+- test accuracy: 93.01075268817205
+
+epoch 20
+- train loss: 0.05889341440932775
+- test loss: 0.033860382003088794
+- train accuracy: 90.67544604927782
+- test accuracy: 99.46236559139786
+
+epoch 21
+- train loss: 0.05789818808222441
+- test loss: 0.046492135928322874
+- train accuracy: 90.9303313508921
+- test accuracy: 94.89247311827957
+
+epoch 22
+- train loss: 0.0566100384788336
+- test loss: 0.02137718858527175
+- train accuracy: 91.37638062871707
+- test accuracy: 95.96774193548387
+
+epoch 23
+- train loss: 0.05172163630659516
+- test loss: 0.02468357825030883
+- train accuracy: 91.7374681393373
+- test accuracy: 98.11827956989248
+
+epoch 24
+- train loss: 0.054118599113378976
+- test loss: 0.03881344614395251
+- train accuracy: 91.77994902293968
+- test accuracy: 92.74193548387096
+

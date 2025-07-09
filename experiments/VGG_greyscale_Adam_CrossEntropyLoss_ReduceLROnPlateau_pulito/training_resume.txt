@@ -1,0 +1,84 @@
+Training summary generated at: 2025-07-09 00:23:58
+Options/configuration:
+{
+  "model": "VGG",
+  "preprocessing": "greyscale",
+  "augmentation": "default",
+  "optimizer": {
+    "name": "Adam",
+    "lr": 0.001
+  },
+  "loss": "CrossEntropyLoss",
+  "scheduler": {
+    "name": "ReduceLROnPlateau",
+    "patience": 3,
+    "factor": 0.1
+  },
+  "training": {
+    "batch_size": 32,
+    "num_epochs": 30,
+    "patience": 5,
+    "resume_from_checkpoint": false,
+    "checkpoint_path": "export/weights/checkpoint.pth",
+    "grad_clip": 2.0
+  },
+  "paths": {
+    "train_dir": "data/pulito/train",
+    "test_dir": "data/pulito/test",
+    "weight_dir": "export/weights"
+  },
+  "logging": {
+    "name": "tensorboard",
+    "log_dir": "runs/rps_experiment",
+    "dashboard_enabled": false
+  }
+}
+
+epoch 0
+- train loss: 3.207808563838134
+- test loss: 0.5074176259804517
+- train accuracy: 54.69413763806287
+- test accuracy: 82.79569892473118
+
+epoch 1
+- train loss: 0.5288762956152897
+- test loss: 0.33513714472792344
+- train accuracy: 82.6677994902294
+- test accuracy: 86.82795698924731
+
+epoch 2
+- train loss: 0.3466901906350678
+- test loss: 0.3518844840306201
+- train accuracy: 91.20645709430757
+- test accuracy: 87.90322580645162
+
+epoch 3
+- train loss: 0.28922950082641047
+- test loss: 0.15410355015257926
+- train accuracy: 92.84197111299915
+- test accuracy: 93.81720430107526
+
+epoch 4
+- train loss: 0.23823918657600754
+- test loss: 1.4914275435100233
+- train accuracy: 93.09685641461343
+- test accuracy: 71.23655913978494
+
+epoch 5
+- train loss: 0.2623635327531579
+- test loss: 0.9372074501584535
+- train accuracy: 93.52166525063721
+- test accuracy: 77.68817204301075
+
+epoch 6
+- train loss: 0.2025963869889745
+- test loss: 0.773331780238777
+- train accuracy: 95.22090059473237
+- test accuracy: 81.72043010752688
+
+epoch 7
+- train loss: 0.21413028999105901
+- test loss: 1.3673137759072516
+- train accuracy: 94.73237043330501
+- test accuracy: 83.60215053763442
+
