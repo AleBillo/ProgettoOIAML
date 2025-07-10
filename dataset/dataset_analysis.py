@@ -27,7 +27,6 @@ class DatasetAnalysis:
 
     def random_samples_preview(self, class_map, num_samples=5):
         import random
-        # Reverse the class_map to map IDs to names
         id_to_class = {v: k for k, v in class_map.items()}
 
         indices = random.sample(range(len(self.dataset)), num_samples)

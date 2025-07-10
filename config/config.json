@@ -1,5 +1,5 @@
 {
-	"model": "ResNet",
+	"model": "CNN",
 	"preprocessing": "blob",
 	"augmentation": "default",
 	"optimizer": {
@@ -28,6 +28,6 @@
 	"logging": {
 		"name": "tensorboard",
 		"log_dir": "runs/rps_experiment",
-		"dashboard_enabled": false
+		"dashboard_enabled": true
 	}
 }

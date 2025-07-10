@@ -18,7 +18,7 @@ def preprocess_hsv(img, target_size=(50, 50)):
     mask = cv2.dilate(mask, kernel, iterations=2)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
-    # Binarize explicitly
+    # Binarize
     _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
 
     # Resize

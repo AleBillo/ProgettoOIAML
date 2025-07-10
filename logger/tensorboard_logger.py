@@ -25,11 +25,11 @@ class TensorBoardLogger:
             self.writer.add_scalar("Accuracy/Test", test_acc, epoch)
 
         self.metrics_resume[epoch] = {
-            "train_loss": train_loss,
-            "test_loss": test_loss,
-            "train_acc": train_acc,
-            "test_acc": test_acc,
-        }
+                "train_loss": train_loss,
+                "test_loss": test_loss,
+                "train_acc": train_acc,
+                "test_acc": test_acc,
+                }
 
     def log_histograms(self, model, epoch):
         for name, param in model.named_parameters():

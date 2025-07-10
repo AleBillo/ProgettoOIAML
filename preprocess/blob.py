@@ -8,12 +8,12 @@ def preprocess_hsv_largest_blob_filled(img, target_size=(50, 50)):
     # Convert to HSV
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    # HSV skin color range (adjust as needed)
+    # HSV skin color range
     lower = np.array([2, 50, 60], dtype='uint8')
     upper = np.array([25, 150, 255], dtype='uint8')
     skin_mask = cv2.inRange(hsv, lower, upper)
 
-    # Morphological operations to clean up
+    # Morphological operations
     skin_mask = cv2.GaussianBlur(skin_mask, (5,5), 0)
     kernel = np.ones((5, 5), np.uint8)
     skin_mask = cv2.dilate(skin_mask, kernel, iterations=2)
@@ -25,7 +25,6 @@ def preprocess_hsv_largest_blob_filled(img, target_size=(50, 50)):
     # Find contours
     contours, _ = cv2.findContours(skin_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if not contours:
-        # No skin-like area detected
         mask = np.zeros(target_size, dtype=np.uint8)
         mask = np.expand_dims(mask, axis=0)
         return mask
